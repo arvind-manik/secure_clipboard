@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis";
+import { isToolMode } from "util/env";
 
 const redis = Redis.fromEnv();
 export const revalidate = 60;
@@ -6,14 +7,15 @@ export const revalidate = 60;
 export const Stats = asyncComponent(async () => {
   const [reads, writes] = await redis
     .pipeline()
-    .get("envshare:metrics:reads")
-    .get("envshare:metrics:writes")
+    .get("clip:metrics:reads")
+    .get("clip:metrics:writes")
     .exec<[number, number]>();
-  const stars = await fetch("https://api.github.com/repos/chronark/envshare")
+
+  const stars = isToolMode() ? null : await fetch("https://api.github.com/repos/chronark/envshare")
     .then((res) => res.json())
     .then((json) => json.stargazers_count as number);
 
-  const stats = [
+  const stats: { label: string; value: number }[] = [
     {
       label: "Documents Encrypted",
       value: writes,
@@ -22,7 +24,7 @@ export const Stats = asyncComponent(async () => {
       label: "Documents Decrypted",
       value: reads,
     },
-  ] satisfies { label: string; value: number }[];
+  ];
 
   if (stars) {
     stats.push({
@@ -33,7 +35,7 @@ export const Stats = asyncComponent(async () => {
 
   return (
     <section className="container mx-auto">
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-3 ">
+      <ul className={`grid grid-cols-1 gap-4 ${ isToolMode() ? 'sm:grid-cols-2' : 'sm:grid-cols-3' }`}>
         {stats.map(({ label, value }) => (
           <li
             key={label}
@@ -53,5 +55,5 @@ export const Stats = asyncComponent(async () => {
 // stupid hack to make "server components" actually work with components
 // https://www.youtube.com/watch?v=h_9Vx6kio2s
 function asyncComponent<T, R>(fn: (arg: T) => Promise<R>): (arg: T) => R {
-  return fn as (arg: T) => R;
+  return fn as unknown as (arg: T) => R;
 }

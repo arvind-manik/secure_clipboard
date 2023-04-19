@@ -2,8 +2,9 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { isToolMode } from "util/env";
 
-const navigation = [
+const navigation: { name: string; href: string; external?: boolean }[] = [
   {
     name: "Share",
     href: "/share",
@@ -12,17 +13,20 @@ const navigation = [
     name: "Unseal",
     href: "/unseal",
   },
+];
 
-  {
-    name: "Deploy",
-    href: "/deploy",
-  },
-  {
+if (!isToolMode()) {
+  navigation.push({
+      name: "Deploy",
+      href: "/deploy",
+  }, {
     name: "GitHub",
-    href: "https://github.com/chronark/envshare",
+    href: "https://github.com/arvind-manik/secure_clipboard",
     external: true,
-  },
-] satisfies { name: string; href: string; external?: boolean }[];
+  });
+}
+
+console.log(navigation);
 
 export const Header: React.FC = () => {
   const pathname = usePathname();
@@ -31,7 +35,7 @@ export const Header: React.FC = () => {
       <div className="container mx-auto">
         <div className="flex flex-col items-center justify-between gap-2 pt-6 sm:h-20 sm:flex-row sm:pt-0">
           <Link href="/" className="text-2xl font-semibold duration-150 text-zinc-100 hover:text-white">
-            EnvShare
+            Secure Clipboard
           </Link>
           {/* Desktop navigation */}
           <nav className="flex items-center grow">

@@ -38,9 +38,13 @@ export default function RootLayout({
               >
                 many others{" "}
               </Link>
+              and tweaked with ❤️ by{" "}
+              <Link href="https://github.com/arvind-manik" className="font-semibold duration-150 hover:text-zinc-200">
+                @arvind-manik
+              </Link>
             </p>
             <p>
-              EnvShare is deployed on{" "}
+              Secure Clipboard is deployed on{" "}
               <Link target="_blank" href="https://vercel.com" className="underline duration-150 hover:text-zinc-200">
                 Vercel
               </Link>{" "}

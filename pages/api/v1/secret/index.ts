@@ -47,8 +47,8 @@ export default async function handler(req: NextRequest): Promise<NextResponse> {
     }
 
     const parsed = requestValidation.safeParse({
-      ttl: req.headers.get("envshare-ttl"),
-      reads: req.headers.get("envshare-reads"),
+      ttl: req.headers.get("clip-ttl"),
+      reads: req.headers.get("clip-reads"),
       secret: await req.text(),
     });
     if (!parsed.success) {
@@ -57,7 +57,7 @@ export default async function handler(req: NextRequest): Promise<NextResponse> {
     const { ttl, reads, secret } = parsed.data;
 
     const id = generateId();
-    const rediskey = ["envshare", id].join(":");
+    const rediskey = ["clip", id].join(":");
 
     const tx = redis.multi();
 
@@ -65,7 +65,7 @@ export default async function handler(req: NextRequest): Promise<NextResponse> {
       remainingReads: reads ?? null,
       secret,
     });
-    tx.incr("envshare:metrics:writes");
+    tx.incr("clip:metrics:writes");
     if (ttl > 0) {
       tx.expire(rediskey, ttl);
     }
