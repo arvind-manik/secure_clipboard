@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Header } from "./header";
 
 import { Analytics } from "@components/analytics";
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-interg" });
 
 export default function RootLayout({
   children,
@@ -17,7 +17,7 @@ export default function RootLayout({
       <body className="relative min-h-screen bg-black bg-gradient-to-tr from-zinc-900/50 to-zinc-700/30">
         {
           // Not everyone will want to host envshare on Vercel, so it makes sense to make this opt-in.
-          process.env.ENABLE_VERCEL_ANALYTICS ? <Analytics /> : null
+          process.env.ENABLE_VERCEL_ANALYTICS && <Analytics />
         }
 
         <Header />

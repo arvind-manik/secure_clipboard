@@ -26,8 +26,6 @@ if (!isToolMode()) {
   });
 }
 
-console.log(navigation);
-
 export const Header: React.FC = () => {
   const pathname = usePathname();
   return (
